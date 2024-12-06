@@ -1,7 +1,8 @@
 # api-users-go
 Uma API de cadastro completo de usuário, com autenticação JWT, redefinição de senha, cadastro de endereço (consumindo uma API), também um cadastro de produtos, trabalhando um pouco com relacionamentos com banco de dados relacional, transactions.
 
-#TECNOLOGIAS:
+# TECNOLOGIAS:
+
 **PostgreSQL** como banco de dados
 **SQCL** para lidar com nossas consultas ao banco de dados
 **Golang Migrate** para lidar com nossas migrations
