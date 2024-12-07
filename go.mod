@@ -5,7 +5,7 @@ go 1.23.2
 require (
 	github.com/go-chi/chi/v5 v5.1.0
 	github.com/go-playground/validator/v10 v10.23.0
-	github.com/gofrs/uuid v4.4.0+incompatible
+	github.com/google/uuid v1.4.0
 	github.com/lib/pq v1.10.9
 	github.com/spf13/viper v1.19.0
 )
