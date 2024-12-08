@@ -17,7 +17,7 @@ type UserService interface {
 	GetUserByID(ctx context.Context, id string) (*response.UserResponse, error)
 }
 
-func NewUserService(repo userrepository.UserRepository) UserService {
+func NewUserService(repo userrepository.UserRepository) *Service {
 	return &Service{
 		repo: repo,
 	}

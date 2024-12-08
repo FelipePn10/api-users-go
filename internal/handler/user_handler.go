@@ -13,43 +13,48 @@ import (
 	"github.com/google/uuid"
 )
 
-func (h *handler) CreateUser(w http.ResponseWriter, r *http.Request) error {
+func (h *handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var req dto.CreateUserDto
 
 	if r.Body == http.NoBody {
 		slog.Error("body is empty", slog.String("package", "userhandler"))
-		return sendErrorResponse(w, httperr.NewBadRequestError("body is required"))
+		sendErrorResponse(w, httperr.NewBadRequestError("body is required"))
+		return
 	}
 
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		slog.Error("error to decode body", slog.Any("error", err), slog.String("package", "handler_user"))
-		return sendErrorResponse(w, httperr.NewBadRequestError("invalid request body"))
+		sendErrorResponse(w, httperr.NewBadRequestError("invalid request body"))
+		return
 	}
 
 	httpErr := validation.ValidateHttpData(req)
 	if httpErr != nil {
 		slog.Error(fmt.Sprintf("error to validate data: %v", httpErr), slog.String("package", "handler_user"))
-		return sendErrorResponse(w, httpErr)
+		sendErrorResponse(w, httpErr)
+		return
 	}
 
 	err = h.service.CreateUser(r.Context(), req)
 	if err != nil {
 		slog.Error(fmt.Sprintf("error to create user: %v", err), slog.String("package", "handler_user"))
-		w.WriteHeader(http.StatusInternalServerError)
-		msg := httperr.NewBadRequestError("error to create user")
-		json.NewEncoder(w).Encode(msg)
-		return nil
+		sendErrorResponse(w, httperr.NewBadRequestError("error to create user"))
+		return
 	}
 
-	return nil
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(map[string]string{"message": "user created successfully"})
 }
 
-func sendErrorResponse(w http.ResponseWriter, err *httperr.RestErr) error {
+func sendErrorResponse(w http.ResponseWriter, err *httperr.RestErr) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(err.Code)
 	json.NewEncoder(w).Encode(err)
-	return err
+}
+
+func (h *handler) CreateUserHandler(w http.ResponseWriter, r *http.Request) {
+	h.CreateUser(w, r)
 }
 
 func (h *handler) UpdateUser(w http.ResponseWriter, r *http.Request) {
@@ -58,78 +63,67 @@ func (h *handler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	if id == "" {
 		slog.Error("id is empty", slog.String("package", "userhandler"))
-		w.WriteHeader(http.StatusBadRequest)
-		msg := httperr.NewBadRequestError("id is required")
-		json.NewEncoder(w).Encode(msg)
+		sendErrorResponse(w, httperr.NewBadRequestError("id is required"))
 		return
 	}
 
 	_, err := uuid.Parse(id)
 	if err != nil {
 		slog.Error(fmt.Sprintf("error to parse id: %v", err), slog.String("package", "handler_user"))
-		w.WriteHeader(http.StatusBadRequest)
-		msg := httperr.NewBadRequestError("error to parse id")
-		json.NewEncoder(w).Encode(msg)
+		sendErrorResponse(w, httperr.NewBadRequestError("error to parse id"))
 		return
 	}
 
 	if r.Body == http.NoBody {
 		slog.Error("body is empty", slog.String("package", "userhandler"))
-		w.WriteHeader(http.StatusBadRequest)
-		msg := httperr.NewBadRequestError("body is required")
-		json.NewEncoder(w).Encode(msg)
-		return
-	}
-	err = json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		slog.Error("error to decode body", slog.String("package", "handler_user"))
-		w.WriteHeader(http.StatusBadRequest)
-		msg := httperr.NewBadRequestError("error to decode body")
-		json.NewEncoder(w).Encode(msg)
-		return
-	}
-	httpErr := validation.ValidateHttpData(req)
-	if httpErr != nil {
-		slog.Error(fmt.Sprintf("error to validate data: %v", httpErr), slog.String("package", "handler_user"))
-		w.WriteHeader(httpErr.Code)
-		json.NewEncoder(w).Encode(httpErr)
-		return
-	}
-	err = h.service.UpdateUser(r.Context(), req, id)
-	if err != nil {
-		slog.Error(fmt.Sprintf("error to update user: %v", err), slog.String("package", "handler_user"))
-		w.WriteHeader(http.StatusInternalServerError)
-		msg := httperr.NewBadRequestError("error to update user")
-		json.NewEncoder(w).Encode(msg)
+		sendErrorResponse(w, httperr.NewBadRequestError("body is required"))
 		return
 	}
 
+	err = json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		slog.Error("error to decode body", slog.String("package", "handler_user"))
+		sendErrorResponse(w, httperr.NewBadRequestError("error to decode body"))
+		return
+	}
+
+	httpErr := validation.ValidateHttpData(req)
+	if httpErr != nil {
+		slog.Error(fmt.Sprintf("error to validate data: %v", httpErr), slog.String("package", "handler_user"))
+		sendErrorResponse(w, httpErr)
+		return
+	}
+
+	err = h.service.UpdateUser(r.Context(), req, id)
+	if err != nil {
+		slog.Error(fmt.Sprintf("error to update user: %v", err), slog.String("package", "handler_user"))
+		sendErrorResponse(w, httperr.NewBadRequestError("error to update user"))
+		return
+	}
 }
+
 func (h *handler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	if id == "" {
 		slog.Error("id is empty", slog.String("package", "userhandler"))
-		w.WriteHeader(http.StatusBadRequest)
-		msg := httperr.NewBadRequestError("id is required")
-		json.NewEncoder(w).Encode(msg)
+		sendErrorResponse(w, httperr.NewBadRequestError("id is required"))
 		return
 	}
+
 	_, err := uuid.Parse(id)
 	if err != nil {
 		slog.Error(fmt.Sprintf("error to parse id: %v", err), slog.String("package", "handler_user"))
-		w.WriteHeader(http.StatusInternalServerError)
-		msg := httperr.NewBadRequestError("error to parse id")
-		json.NewEncoder(w).Encode(msg)
+		sendErrorResponse(w, httperr.NewBadRequestError("error to parse id"))
 		return
 	}
+
 	res, err := h.service.GetUserByID(r.Context(), id)
 	if err != nil {
 		slog.Error(fmt.Sprintf("error to get user: %v", err), slog.String("package", "handler_user"))
-		w.WriteHeader(http.StatusInternalServerError)
-		msg := httperr.NewBadRequestError("error to get user")
-		json.NewEncoder(w).Encode(msg)
+		sendErrorResponse(w, httperr.NewBadRequestError("error to get user"))
 		return
 	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(res)

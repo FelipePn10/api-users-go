@@ -14,7 +14,7 @@ func (s *Service) UpdateUser(ctx context.Context, u dto.UpdateUserDto, id string
 	return nil
 }
 
-func (s *Service) GetUserbyID(ctx context.Context, id string) (*response.UserResponse, error) {
+func (s *Service) GetUserByID(ctx context.Context, id string) (*response.UserResponse, error) {
 	userFake := response.UserResponse{
 		ID:    "123",
 		Name:  "John Doe",

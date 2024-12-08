@@ -10,23 +10,23 @@ var Env *config
 
 type config struct {
 	GoEnv       string `mapstructure:"GO_ENV"`
-	GoPort      string `mapstructure:"GO_PORT=8080"`
+	GoPort      string `mapstructure:"GO_PORT"`
 	DatabaseURL string `mapstructure:"DATABASE_URL"`
 }
 
 func LoadingConfig(path string) (*config, error) {
-	viper.SetConfigFile("app_config")
+	viper.SetConfigName("app_config")
 	viper.SetConfigType("env")
-	viper.SetDefault("GO_PORT", "8080")
 	viper.AddConfigPath(path)
-	viper.SetConfigFile(".env")
 	viper.AutomaticEnv()
+
+	viper.SetDefault("GO_PORT", "8090")
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		slog.Warn("No .env file found, using default values")
-		return nil, err
+		slog.Warn("No app_config.env file found, using default values")
 	}
+
 	err = viper.Unmarshal(&Env)
 	if err != nil {
 		return nil, err

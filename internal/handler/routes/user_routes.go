@@ -10,5 +10,4 @@ func InitUserRoutes(router chi.Router, h userhandler.UserHandler) {
 		r.Post("/", h.CreateUser)
 		r.Patch("/{id}", h.UpdateUser)
 	})
-
 }
