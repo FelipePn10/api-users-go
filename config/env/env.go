@@ -20,7 +20,7 @@ func LoadingConfig(path string) (*config, error) {
 	viper.AddConfigPath(path)
 	viper.AutomaticEnv()
 
-	viper.SetDefault("GO_PORT", "8090")
+	viper.SetDefault("GO_PORT", "8080")
 
 	err := viper.ReadInConfig()
 	if err != nil {

@@ -31,14 +31,15 @@ func main() {
 		slog.Error("error to connect to database", "err", err, slog.String("package", "main"))
 		return
 	}
+	defer dbConnection.Close()
 
-	router := chi.NewRouter()
 	queries := sqlc.New(dbConnection)
 
 	userRepo := userrepository.NewUserRepository(dbConnection, queries)
 	newUserService := userservice.NewUserService(userRepo)
 	newUserHandler := userhandler.NewUserHandler(newUserService)
 
+	router := chi.NewRouter()
 	routes.InitUserRoutes(router, newUserHandler)
 
 	port := fmt.Sprintf(":%s", env.Env.GoPort)
@@ -47,4 +48,6 @@ func main() {
 	if err != nil {
 		slog.Error("error to start server", err, slog.String("package", "main"))
 	}
+	slog.Info("server stopped")
+	return
 }

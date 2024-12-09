@@ -12,13 +12,15 @@ func NewUserHandler(service userservice.UserService) UserHandler {
 	}
 }
 
-// handler implementa a interface UserHandler
 type handler struct {
 	service userservice.UserService
 }
 
-// UserHandler define os métodos que nosso handler deve implementar
 type UserHandler interface {
 	CreateUser(w http.ResponseWriter, r *http.Request)
 	UpdateUser(w http.ResponseWriter, r *http.Request)
+	GetUserById(w http.ResponseWriter, r *http.Request)
+	DeleteUser(w http.ResponseWriter, r *http.Request)
+	FindManyUsers(w http.ResponseWriter, r *http.Request)
+	UpdateUserPassword(w http.ResponseWriter, r *http.Request)
 }
