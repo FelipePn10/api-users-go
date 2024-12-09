@@ -4,19 +4,22 @@ import (
 	"context"
 	"database/sql"
 	"github.com/FelipePn10/api-users-go/tree/main/internal/database/sqlc"
+	"github.com/FelipePn10/api-users-go/tree/main/internal/dto"
 	"github.com/FelipePn10/api-users-go/tree/main/internal/entity"
 )
 
-func NewUserRepository(db *sql.DB, q *sqlc.Queries) UserRepository {
+func NewUserRepository(db *sql.DB, q *sqlc.Queries, user *dto.UpdateUserPasswordDto) UserRepository {
 	return &repository{
 		db,
 		q,
+		user,
 	}
 }
 
 type repository struct {
 	db      *sql.DB
 	queries *sqlc.Queries
+	user    *dto.UpdateUserPasswordDto
 }
 
 type UserRepository interface {

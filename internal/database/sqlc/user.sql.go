@@ -9,8 +9,45 @@ import (
 	"context"
 )
 
+const findManyUsers = `-- name: FindManyUsers :many
+SELECT id, name, email, password, created_at, updated_at
+FROM users
+`
+
+func (q *Queries) FindManyUsers(ctx context.Context) ([]User, error) {
+	rows, err := q.db.QueryContext(ctx, findManyUsers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []User
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Email,
+			&i.Password,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getUserByID = `-- name: GetUserByID :one
-  SELECT id, name, email, password, created_at, updated_at from users u where u.id = $1
+SELECT id, name, email, password, created_at, updated_at
+FROM users u
+WHERE u.id = $1
 `
 
 func (q *Queries) GetUserByID(ctx context.Context, id string) (User, error) {

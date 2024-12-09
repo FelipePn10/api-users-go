@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/FelipePn10/api-users-go/tree/main/internal/dto"
 	"github.com/FelipePn10/api-users-go/tree/main/internal/handler/response"
-	//"time"
 )
 
 func (s *Service) CreateUser(ctx context.Context, u dto.CreateUserDto) error {
@@ -31,7 +30,7 @@ func (s *Service) DeleteUser(ctx context.Context, id string) error {
 	return nil
 }
 
-func (s *Service) FindManyUsers(ctx context.Context) (response.ManyUsersResponse, error) {
+func (s *Service) FindManyUsers(ctx context.Context) (*response.ManyUsersResponse, error) {
 	usersFake := response.ManyUsersResponse{}
 	for i := 0; i < 5; i++ {
 		userFake := response.UserResponse{
@@ -43,7 +42,7 @@ func (s *Service) FindManyUsers(ctx context.Context) (response.ManyUsersResponse
 		}
 		usersFake.Users = append(usersFake.Users, userFake)
 	}
-	return usersFake, nil
+	return &usersFake, nil
 }
 
 func (s *Service) UpdateUserPassword(ctx context.Context, u *dto.UpdateUserPasswordDto, id string) error {

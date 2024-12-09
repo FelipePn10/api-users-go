@@ -171,7 +171,7 @@ func (h *handler) UpdateUserPassword(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(httpErr)
 		return
 	}
-	err = h.service.UpdateUserPassword(r.Context(), req, id)
+	err = h.service.UpdateUserPassword(r.Context(), &req, id)
 	if err != nil {
 		slog.Error(fmt.Sprintf("error to update user password: %v", err), slog.String("package", "handler_user"))
 		w.WriteHeader(http.StatusInternalServerError)

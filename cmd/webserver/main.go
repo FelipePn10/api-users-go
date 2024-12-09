@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/FelipePn10/api-users-go/tree/main/internal/dto"
 	"log/slog"
 	"net/http"
 
@@ -20,7 +21,7 @@ func main() {
 	logger.InitLogger()
 	slog.Info("starting api")
 
-	_, err := env.LoadingConfig(".")
+	_, err := env.LoadingConfig("C:\\Users\\Felipe\\OneDrive\\Desktop\\api-users-go\\cmd\\webserver")
 	if err != nil {
 		slog.Error("failed to load environment variables", err, slog.String("package", "main"))
 		return
@@ -31,11 +32,19 @@ func main() {
 		slog.Error("error to connect to database", "err", err, slog.String("package", "main"))
 		return
 	}
-	defer dbConnection.Close()
 
 	queries := sqlc.New(dbConnection)
 
-	userRepo := userrepository.NewUserRepository(dbConnection, queries)
+	userDto := &dto.UpdateUserPasswordDto{
+		BasicUserDto: dto.BasicUserDto{
+			Name:     "John Doe",
+			Email:    "johndoe@example.com",
+			Password: "StrongPassword@123",
+		},
+		OldPassword: "OldPassword@123",
+	}
+
+	userRepo := userrepository.NewUserRepository(dbConnection, queries, userDto)
 	newUserService := userservice.NewUserService(userRepo)
 	newUserHandler := userhandler.NewUserHandler(newUserService)
 
