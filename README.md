@@ -13,4 +13,4 @@ Uma API de cadastro completo de usuário, com autenticação JWT, redefinição 
 **Docker** para rodar nosso banco de dados
 
 
-**este projeto, é um projeto pessoal onde não trabalho neles somente algumas vezes, ainda esta em desenvolvimento!**
+**este projeto, é um projeto pessoal onde não trabalho frequentemente, ainda esta em desenvolvimento!**
