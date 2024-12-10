@@ -11,3 +11,6 @@ Uma API de cadastro completo de usuário, com autenticação JWT, redefinição 
 **Swaggo** para criar nossa documentação no padrão OpenAPI
 **Viper** para gerenciar nossa variáveis de ambiente
 **Docker** para rodar nosso banco de dados
+
+
+**este projeto, é um projeto pessoal onde não trabalho neles somente algumas vezes, ainda esta em desenvolvimento!**
